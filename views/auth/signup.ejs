@@ -1,0 +1,42 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+   <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <h1>Signup</h1>
+        <!-- Following if statement checks for the errorMessage variable called from our 'getLogin' function in auth.js. If there it displays it.-->
+        <% if (errorMessage) { %>
+            <div class="user-message user-message--error"><%- errorMessage %></div> <!-- here I had to use '-' in <%- errorMessage %> and not the '=' because I am using unescaped HTML in my auth.js controller to show a link. -->
+        <% } %>
+        <form class="login-form" action="/signup" method="POST">
+            <div class="form-control">
+                <label for="firstName">First Name</label>
+                <input type="text" name="firstName" id="firstName" value="<%= oldInput.firstName %>">
+            </div>
+            <div class="form-control">
+                <label for="lastName">Last Name</label>
+                <input type="text" name="lastName" id="lastName" value="<%= oldInput.lastName %>">
+            </div>
+            <div class="form-control">
+                <label for="email">E-Mail</label>
+            <!-- on the following input we use a css class that accesses our validationErrors from the auth.js file. It looks for 'email' value on param and assigns the 'invalid' class if there is one and blank '' if not. -->
+                <input class="<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>" type="email" name="email" id="email" value="<%= oldInput.email %>">
+            </div>
+            <div class="form-control">
+                <label for="password">Password (Minimum length 12-characters)</label>
+                <!-- on the following input we use a css class that accesses our validationErrors from the auth.js file. It looks for 'password' value on param and assigns the 'invalid' class if there is one and blank '' if not. -->
+                <input class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>" type="password" name="password" id="password" value="<%= oldInput.password %>">
+            </div>
+            <div class="form-control">
+                <label for="confirmPassword">Confirm Password</label>
+                <input class="<%= validationErrors.find(e => e.param === 'confirmPassword') ? 'invalid' : '' %>" type="password" name="confirmPassword" id="confirmPassword" value="<%= oldInput.confirmPassword %>">
+            </div>
+            <button class="btn" type="submit">Signup</button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"> <!-- When the button is pressed it passes this csrfToken to allow us to render our next view. -->
+        </form>
+    </main>
+<%- include('../includes/end.ejs') %>

@@ -1,0 +1,5 @@
+<form action="/cart" method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>"> <!-- When the button is pressed it passes this csrfToken to allow us to render our next view. -->
+    <button class="btn" type="submit">Add to Cart</button>
+    <input type="hidden" name="productId" value="<%= product._id %>"> <!-- a hidden input gets sent when the submit button is pressed to do the <form> action -->
+</form>

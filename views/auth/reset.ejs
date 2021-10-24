@@ -1,0 +1,31 @@
+<!-- the following line is an EJS include. You simply include the path to the file you want to render.
+Since includes is in the views folder you can just type ../ to go up a level. Full path is '../includes/head.ejs'. -->
+<%- include('../includes/head.ejs') %>
+
+<link rel="stylesheet" href="/css/forms.css">
+<link rel="stylesheet" href="/css/auth.css">
+    
+</head>
+
+<body>
+<%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <h1>Login</h1>
+        <!-- Following if statement checks for the errorMessage variable called from our 'getLogin' function in auth.js. If there it displays it.-->
+        <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div>
+        <!-- if I want to serve raw HTML use this next bit - <%- errorMessage %> I use the minus (-) sign instead of equals (=) because I'm serving raw HTML in this error message coming from controllers/auth.js. -->
+        <% } %>
+        <form class="login-form" action="/reset" method="POST"> <!-- this determines the submit button action -->
+            <div class="form-control">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email">
+            </div>
+
+            <!-- the following line says, if you're in 'editing' mode display 'Update Product' on the button else display 'Add Product'  on the button. -->
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"> <!-- When the button is pressed it passes this csrfToken to allow us to render our next view. -->
+            <button class="btn" type="submit">Reset Password</button>
+        </form>
+    </main>
+<%- include('../includes/end.ejs') %>

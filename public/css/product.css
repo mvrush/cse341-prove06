@@ -1,0 +1,32 @@
+/* CSS for our Product Cards */
+
+.product-form {
+    width: 20rem;
+    max-width: 90%;
+    margin: auto;
+    display: block;
+}
+
+.product-item {
+    width: 20rem;
+    max-width: 95%;
+    margin: 1rem;
+    background-color: #18435A;
+}
+
+.product__title {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #F0F6FA;
+}
+
+.product__price {
+    text-align: center;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.product__description {
+    text-align: center;
+    color: #F0F6FA;
+}

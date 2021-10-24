@@ -1,0 +1,44 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Complete Node.js Guide course on Academind",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mvrush/cse341-node.git"
+  },
+  "keywords": [
+    "adademind",
+    "Node.js",
+    "course"
+  ],
+  "author": "Matt Rushton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mvrush/cse341-node/issues"
+  },
+  "homepage": "https://github.com/mvrush/cse341-node#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "connect-mongodb-session": "^3.1.1",
+    "csurf": "^1.11.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.13.0",
+    "mongodb": "^4.1.3",
+    "mongoose": "^6.0.10",
+    "nodemailer": "^6.7.0",
+    "nodemailer-sendgrid-transport": "^0.2.0"
+  }
+}

@@ -1,0 +1,24 @@
+<!-- the following line is an EJS include. You simply include the path to the file you want to render.
+Since includes is in the views folder you need to move up a level so type ../ you can just type '../includes/head.ejs'. -->
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/product-detail.css">
+    
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main class="centered">
+        <h1><%= product.title %></h1>
+        <hr>
+        <div>
+            <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+        </div>
+        <h2>$<%= product.price %> 😮</h2>
+        <p><%= product.description %></p>
+                        <!-- the second argument '{product: product}' passes our local to this page 'product' variable to the include so the include works.
+                       We only need to do this because it's in a local page JavaScript loop and 'product' is defined in this loop. -->
+                    <% if (isAuthenticated) { %> <!-- says, if we are Authenticated then show the add-to-cart.ejs includes view (our button). -->
+                    <%- include('../includes/add-to-cart.ejs') %>
+                    <% } %> <!-- the second argument '{product: product}' is not needed on this page because this include is not in a JavaScript code loop. -->
+    </main>
+    <%- include('../includes/end.ejs') %>

@@ -1,0 +1,42 @@
+<!-- the following line is an EJS include. You simply include the path to the file you want to render.
+Since includes is in the views folder you need to move up a level so type ../ you can just type '../includes/head.ejs'. -->
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/product.css">
+    
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <main>
+<!-- the following JavaScript if statement tells the div code following it to display only if we do have some products in the array -->
+        <% if (prods.length > 0) { %>
+         <div class="grid">
+                <% for (let product of prods) { %> <!-- starts JavaScript code that loops through all our products -->
+            <article class="card product-item">
+                <header class="card__header">
+                    <h1 class="product__title"><%= product.title %></h1> <!-- looks at the product pulled from the prods array (defined and pulled a few lines above this) and pulls the title from the product object to display -->
+                </header>
+                <div class="card__image">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                </div>
+                <div class="card__content">
+                    <h2 class="product__price">$<%= product.price %></h2>
+                    <p class="product__description"><%= product.description %></p>
+                </div>
+                <div class="card__actions">
+                    <a href="/admin/edit-product/<%= product._id %>?edit=true" class="btn">Edit</a> <!-- this sends our Query Paramaters ?edit-true with the URL to send us to the edit product page. -->
+                    <form action="/admin/delete-product" method="POST">
+                        <input type="hidden" value="<%= product._id %>" name="productId">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>"> <!-- When the button is pressed it passes this csrfToken to allow us to render our next view. -->
+                        <button class="btn" type="submit">Delete</button>
+                    </form>
+                </div>
+            </article>
+                <% } %> <!-- this } closes our 'for' loop that we started at the top of the article tag -->
+        </div>
+        <% } else { %> <!-- this ejs tag closes the JavaScript if statement we started at the top of this div with } and then continues it with an else statement -->
+            <h1>No Products Found!</h1>
+        <% } %> <!-- this ejs tag finally closes our JavaScript code -->
+    </main>
+<%- include('../includes/end.ejs') %>
