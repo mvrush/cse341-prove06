@@ -257,7 +257,7 @@ exports.postReset = (req, res, next) => {
           // in the next line we are using backticks `` to write multiple lines of HTML code and also put variables in there
           html: `
           <p>You requested a password reset.</p>
-          <p>Click this <a href="https://matt-rushton-cse341-prove06.herokuapp.com//reset/${token}">link</a> to set a new password.</p>
+          <p>Click this <a href="https://matt-rushton-cse341-prove06.herokuapp.com/reset/${token}">link</a> to set a new password.</p>
           <p>Link expires in one hour!</p>
           `
         });  
