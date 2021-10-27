@@ -223,6 +223,7 @@ exports.getReset = (req, res, next) => {
   } else { 
     message = null; // if message length is 0 then set message to null.
   }
+
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset Password',
@@ -254,10 +255,9 @@ exports.postReset = (req, res, next) => {
           from: 'mvrush@hotmail.com',
           subject: 'Password Reset',
           // in the next line we are using backticks `` to write multiple lines of HTML code and also put variables in there
-          // TO DEPLOY TO HEROKU I HAD TO REPLACE THE 'href=' link. The original one was "http://localhost:3000/reset/${token}"
           html: `
           <p>You requested a password reset.</p>
-          <p>Click this <a href="https://matt-rushton-cse341-prove06.herokuapp.com/reset/${token}">link</a> to set a new password.</p>
+          <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
           <p>Link expires in one hour!</p>
           `
         });  
@@ -296,6 +296,7 @@ exports.getNewPassword = (req, res, next) => {
     } else { 
       message = null; // if message length is 0 then set message to null.
     }
+/**************Following block removed when activating password validation ******************  
     res.render('auth/new-password', {
       path: '/new-password',
       pageTitle: 'New Password',
@@ -303,7 +304,20 @@ exports.getNewPassword = (req, res, next) => {
       userId: user._id.toString(), // we are resetting a specific userId's password so we need to find it.
       passwordToken: token, // holds the value of 'token' from our const token above and is used in our new-password.ejs view
     });
-  })
+*****************************************************************************************************/  
+  res.render('auth/new-password', {
+    path: '/new-password',
+    pageTitle: 'New Password',
+    errorMessage: message,
+    userId: user._id.toString(), // we are resetting a specific userId's password so we need to find it.
+    passwordToken: token, // holds the value of 'token' from our const token above and is used in our new-password.ejs view
+    oldInput: { // this is used for making our user input sticky. For 'getLogin' we have the fields blank so they are not rendered on the page.
+      password: ''
+    },
+    validationErrors: [] // we set an empty array to hold validation errors if they occur.
+  });
+
+})
   .catch(err => {
     console.log("err from getNewPassword in controllers/auth.js", err)
     const error = new Error(err);
@@ -314,13 +328,39 @@ exports.getNewPassword = (req, res, next) => {
 
 // postNewPassword pulls the data out of our new-password.ejs view
 exports.postNewPassword = (req, res, next) => {
+/*START VALIDATION FLASH MESSAGE LINES*******************************/  
+  let message = req.flash('error'); // sets our message variable using our 'flash' package with the value of 'error'. 'message' is then used as the value of 'errorMessage' in our res.render below.
+  if (message.length > 0) { // says if the message length is greater than 0 (which means we have a message)...
+    message = message[0]; // set the message in element [0] of the array (the first position).
+  } else { 
+    message = null; // if message length is 0 then set message to null.
+  }
+/*END VALIDATION FLASH MESSAGE LINES********************************************/
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
 
+/******START VALIDATION LINES. Following lines starting with 'const errors' added during validation installation */
+const errors = validationResult(req); // this gathers all the errors collected by this package.
+if (!errors.isEmpty()) {
+  console.log("This is our errors array from 'postNewPassword' in controllers/auth.js", errors.array()); // shows us what's in the errors.array()
+return res.status(422).render('auth/new-password', { // we return this so the code starting at User.findOne does not execute. // status(422) sends the '422 Unprocessable Entity' code. Means it was unable to process the contained instructions.
+    path: '/new-password',
+    pageTitle: 'New Password',
+    userId: userId, // have to add userId to the render so that inputs on 'new-password.ejs' work.
+    passwordToken: passwordToken, // have to add passwordToken to the render so that inputs on 'new-password.ejs' work.
+    errorMessage: errors.array()[0].msg, // we pull the first item in the array and pull the 'msg' property from it to display our message
+    oldInput: { // this is used for making our user input sticky. For 'postLogin' we have the JS Object filled with the constants defined in 'postLogin'.
+      password: newPassword
+    },
+    validationErrors: errors.array() // this returns the full array of errors and we can access them with our 'validationErrors' definition.
+  });
+}
+/*******END OF VALIDATION LINES*/
+
   let resetUser; // we set a variable with scope just in the postNewPassword function using 'let'. Then we can use it in multiple places in this function
   // after pulling the above const's from our new-password.ejs view we reset the password
-  User.findOne({
+  User.findOne({ // we look for one user that has the correct reset token and the correct token expiration and the userId.
     resetToken: passwordToken,
     resetTokenExpiration: { $gt: Date.now() }, // $gt means 'greater than'. So greater than Date.now()
     _id: userId
@@ -337,6 +377,8 @@ exports.postNewPassword = (req, res, next) => {
     return resetUser.save(); // we then save the whole thing.
   })
   .then(result => {
+/*ADDED FLASH ERROR LINE DURING VALIDATION SETUP*/
+    req.flash('error', '<div class="user-message"><p>Password successfully changed! Please login:</p></div>'); // flashes the message using our flash method setup in app.js. First value 'error' is a key that matches what we used in the 'postNewPassword' in this block, the second value is the message that gets flashed.
     res.redirect('/login'); // this is the result of our .save from the previous .then() function. We could also put in code to flash a message that the reset was successful and/or even send a confirmation email.
   })
   .catch(err => {

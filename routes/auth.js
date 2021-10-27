@@ -85,6 +85,17 @@ router.post('/reset', authController.postReset);
 router.get('/reset/:token', authController.getNewPassword); // The path is /reset/:token and :token is a dynamic parameter that holds the unique token for a reset. This is the 'get' route using the 'getNewPassowrd' function in the authController.
 
 // this is the 'post' route using the 'postNewPassword' function in the authController.
-router.post('/new-password', authController.postNewPassword);
+router.post('/new-password',
+// We wrap all the validation data in an array.
+    [
+    body(
+        'password',
+        'Please enter a password with only numbers, special characters and text that is at least 12 characters.'
+    )
+        .isLength({ min: 12 }) // sets our minimum password length to 4
+        .isAlphanumeric() // sets the password to alphanumeric only. Can also chain with a dot (.) and specify special chatacters.
+        .trim() // Sanitizing. Trim removes excess whitespace.
+    ], authController.postNewPassword
+);
 
 module.exports = router;
